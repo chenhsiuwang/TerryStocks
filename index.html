@@ -1,104 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-.accordion {
-  background-color: #eee;
-  color: #444;
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-  transition: 0.4s;
-}
+<title></title>
 
-.active, .accordion:hover {
-  background-color: #ccc; 
-}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-.panel {
-  padding: 0 18px;
-  display: none;
-  background-color: white;
-  overflow: hidden;
-}
-</style>
 </head>
+
+<style>
+
+body {
+
+	background-image: url('https://user-images.githubusercontent.com/88214089/127724499-95940381-3721-4887-925f-23e542fb54dc.jpg');
+	background-attachment: fixed;
+	color: #333;
+}
+
+.box {
+	border-radius: 3px;
+	background: rgba(101, 101, 101, 0.7); margin: auto; padding: 12px;
+}
+
+.lightbox {
+	zoom: 1.5;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(10, 10, 10, 0.8);
+	text-align: center;
+	margin: auto;
+
+}
+
+div.horizontal {
+	display: flex;
+	justify-content: center;
+	height: 100%;
+}
+
+div.vertical {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+}
+
+::-webkit-input-placeholder {
+   color: #955;
+   text-align: center;
+}
+
+::-moz-placeholder {
+   color: #955;
+   text-align: center;
+}
+
+:-ms-input-placeholder {
+   color: #955;
+   text-align: center;
+}
+
+</style>
+
 <body>
 
-<h2></h2>
+	<div id="loginbox" class="lightbox" >
+		<div class="horizontal">
+			<div class="vertical">
+				<div class="box">
+					<input style="margin: 16px; text-align: center;" id="password" type="password" placeholder="password" /> <br />
+					<button id="loginbutton" type="button">Enter</button>
+					<p id="wrongPassword" style="display: none">wrong password</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
-<button class="accordion">2021 一級股</button>
-<div class="panel">
-  <p>U SNOW LMND PINS FLGT ZM CRSP UPST</p>
-</div>
 
-<button class="accordion">2021 二級股</button>
-<div class="panel">
-  <p>ASAN ONEM HCAT OTRK PSNL FUBO FROG PLTR OM VCYT DMTK OPEN CLOV BAINF FOUR SOFI SKLZ CMPS WD CURI WING INMD GDRX KNSL CPNG AI SYNA CEVA CRNC DKNG GAN NCNO ZI STEM PATH RBLX AFRM CELH TTCF</p>
-</div>
 
-<button class="accordion">一級股</button>
-<div class="panel">
-  <p>TDOC SHOP TTD AYX MDB OKTA TWLO FSLY DDOG MELI ISRG TTWO SEDG NVCR TEAM GH EDIT ABMD MTCH ZEN ROKU LYV DOCU CRWD SE ADYEY ETSY</p>
-</div>
-  
-<button class="accordion">二級股</button>
-<div class="panel">
-  <p>PLAN AVLR DAVA GLOB ZNGA ATVI ZG HUBS FIVN APPN NVTA APPF CRSP MGNI FRPT SMAR ESTC SWAV NEWR WIX ZS COUP PAYC SPLK CMG DT PD NET MDLA SPT BL RPD YEXT SDGR GMED INSP FVRR UPWK CHWY DXCM REGN QDEL NBIX STAA WDAY BAND</p>
-</div>
-  
-<button class="accordion">老一級股</button>
-<div class="panel">
-  <p>MSFT AMZN FB GOOGL CRM NFLX NVDA ADBE INTU V MA PYPL SQ DIS WMT BKNG</p>
-</div>
-  
-<button class="accordion">老二級股</button>
-<div class="panel">
-  <p>IDXX ZTS PODD VRTX LULU DPS CMG EA RMD MASI ATVI MKL SNPS MKC ULTA</p>
-</div>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 
-<button class="accordion">鐵齒股</button>
-<div class="panel">
-  <p>SPCE BYND SPOT PTON</p>
-</div>
-  
-<button class="accordion">生技觀望股</button>
-<div class="panel">
-  <p>MEIP VSTM CHRS OMER APTO VBIV SGMO FOLD SEEL ADAP SIOX</p>
-</div>
-  
-<button class="accordion">生技股</button>
-<div class="panel">
-  <p>AXSM ARWR DRNA CORT TGTX AUPH KPTI BTAI SUPN AFMD TRIL HZNP MYOV GBT KALA</p>
-</div> 
-  
-<button class="accordion">EV 佈署股</button>
-<div class="panel">
-  <p>TSLA NIO XPEV ON QS TPIC TSM BYDDF IFNNY SOTGY GNENF</p>
-</div> 
-  
-  
-<script>
-var acc = document.getElementsByClassName("accordion");
-var i;
 
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var panel = this.nextElementSibling;
-    if (panel.style.display === "block") {
-      panel.style.display = "none";
-    } else {
-      panel.style.display = "block";
-    }
-  });
-}
-</script>
+	 <script type="text/javascript" src="https://rawcdn.githack.com/chrisveness/crypto/7067ee62f18c76dd4a9d372a00e647205460b62b/sha1.js"></script>
+
+	<script type="text/javascript">
+	"use strict";
+
+
+	function loadPage(pwd) {
+
+		var hash= pwd;
+		hash= Sha1.hash(pwd);
+		var url= hash + "/index.html";
+
+		$.ajax({
+			url : url,
+			dataType : "html",
+			success : function(data) {
+
+				window.location= url;
+
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+
+
+				parent.location.hash= hash;
+
+				//$("#wrongPassword").show();
+				$("#password").attr("placeholder","wrong password");
+				$("#password").val("");
+			}
+		});
+	}
+
+
+	$("#loginbutton").on("click", function() {
+		loadPage($("#password").val());
+	});
+	$("#password").keypress(function(e) {
+		if (e.which == 13) {
+
+			loadPage($("#password").val());
+		}
+	});
+	$("#password").focus();
+
+	</script>
 
 </body>
 </html>
