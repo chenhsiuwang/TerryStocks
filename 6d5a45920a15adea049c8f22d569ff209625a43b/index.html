@@ -31,7 +31,8 @@
 <body>
 
 <h2></h2>
-
+<input placeholder="symbol" type="text" id="search">
+<input type="button" value="Go" onclick="search(document.getElementById('search').value)">
 <button class="accordion">2021 一級股</button>
 <div class="panel">
   <p>U SNOW LMND PINS FLGT ZM CRSP UPST AFRM</p>
@@ -102,6 +103,10 @@ for (i = 0; i < acc.length; i++) {
       panel.style.display = "block";
     }
   });
+}
+  
+function search(string) {
+  window.find(string);
 }
 </script>
 
