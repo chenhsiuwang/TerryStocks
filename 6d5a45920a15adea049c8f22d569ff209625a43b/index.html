@@ -16,29 +16,30 @@
   transition: 0.4s;
 }
 
-.active, .accordion:hover {
-  background-color: #ccc; 
+.active,
+.accordion:hover {
+  background-color: #ccc;
 }
 
 .panel {
   padding: 0 18px;
-  display: none;
   background-color: white;
+  max-height: 0;
   overflow: hidden;
+  transition:  0.4s ease-out;
 }
 </style>
 </head>
 <body>
 
 <h2></h2>
-<!-- <input placeholder="symbol" type="text" id="search">
-<input type="button" value="Go" onclick="search(document.getElementById('search').value)"> -->
-<button class="accordion">2021 一級股</button>
-<div class="panel">
-  <p>U SNOW LMND PINS FLGT ZM CRSP UPST AFRM</p>
-</div>
+<input type="text" id="DefinitionSearch" placeholder="Symbol" title="Stock Symbol">
+<button type="button" id="clearHighlight" onclick="clearBtn();">x</button>
 
-<button class="accordion">2021 二級股</button>
+
+<div id="highlightIndex">
+  <hr>
+  <button class="accordion">2021 二級股</button>
 <div class="panel">
   <p>ASAN ONEM HCAT PSNL FUBO FROG PLTR OM VCYT DMTK OPEN CLOV BAINF FOUR SOFI SKLZ CMPS WD CURI WING INMD GDRX KNSL CPNG AI SYNA CEVA CRNC DKNG GAN NCNO ZI STEM PATH RBLX CELH TTCF DOCN GLBE MQ LSPD</p>
 </div>
@@ -87,27 +88,223 @@
   <div class="panel">
     <p>NTNX(二級末) NVTA(二級) OTRK(三級)</p>
   </div>
-  
+  <hr>
+</div>
   
 <script>
-var acc = document.getElementsByClassName("accordion");
-var i;
+//Hilitor Settings
+var highlightIndex = new Hilitor("highlightIndex");
+highlightIndex.setMatchType("left");
 
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    this.classList.toggle("active");
+//Globals
+var input = document.getElementById("DefinitionSearch");
+var acc = document.getElementsByClassName("accordion");
+
+//Open Subject Accordion
+[].forEach.call(acc, function(item, index, a) {
+  item.addEventListener("click", function() {
     var panel = this.nextElementSibling;
-    if (panel.style.display === "block") {
-      panel.style.display = "none";
+    this.classList.toggle("active");
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
     } else {
-      panel.style.display = "block";
+      panel.style.maxHeight = panel.scrollHeight + "px";
     }
   });
+});
+
+//Search Accordings; Highlight & Open Matching Areas
+input.addEventListener("keyup", function(event) {
+  if (event.which === 13 || event.keyCode === 13) {
+
+    var input, filter, i, acc, panels, txtValue, searchText, searchTitle;
+    input = document.getElementById("DefinitionSearch");
+    filter = input.value.toUpperCase();
+    acc = document.getElementsByClassName("accordion");
+    panels = document.getElementsByClassName("panel");
+
+    for (i = 0; i < panels.length; i++) {
+      for (i = 0; i < acc.length; i++) {
+        searchText = panels[i].textContent || panels[i].innerText;
+        searchTitle = acc[i].textContent || acc[i].innerText;
+        if (input.value !== "") {
+          if (searchText.toUpperCase().indexOf(filter) > -1 || searchTitle.toUpperCase().indexOf(filter) > -1) {
+            if (!acc[i].classList.contains("active")) {
+              acc[i].classList.add("active");
+            }
+            highlightIndex.apply(filter);
+            panels[i].style.maxHeight = panels[i].scrollHeight + "px";
+            panels[i].scrollIntoView({
+              behavior: 'smooth'
+            });
+          } else {
+            if (acc[i].classList.contains("active")) {
+              acc[i].classList.remove("active");
+            }
+            panels[i].style.maxHeight = null;
+          }
+        } else {
+          highlightIndex.remove();
+          if (acc[i].classList.contains("active")) {
+            acc[i].classList.remove("active");
+          }
+          panels[i].style.maxHeight = null;
+        }
+      }
+    }
+  }
+});
+
+//Clear button
+function clearBtn() {
+  var input, i, acc, panels;
+  input = document.getElementById("DefinitionSearch");
+  acc = document.getElementsByClassName("accordion");
+  panels = document.getElementsByClassName("panel");
+
+  input.value = "";
+  highlightIndex.remove();
+  for (i = 0; i < panels.length; i++) {
+    for (i = 0; i < acc.length; i++) {
+      if (acc[i].classList.contains("active")) {
+        acc[i].classList.remove("active");
+      }
+      panels[i].style.maxHeight = null;
+    }
+  }
 }
-  
-function search(string) {
-  window.find(string);
+
+// Highlight Script "hilitor.js" Found at: https://www.the-art-of-web.com/javascript/search-highlight/
+// Original JavaScript code by Chirp Internet: www.chirp.com.au
+// Please acknowledge use of this code by including this header.
+function Hilitor(id, tag) {
+
+  // private variables
+  var targetNode = document.getElementById(id) || document.body;
+  var hiliteTag = tag || "MARK";
+  var skipTags = new RegExp("^(?:" + hiliteTag + "|SCRIPT|FORM|SPAN)$");
+  //var colors = ["#ff6", "#a0ffff", "#9f9", "#f99", "#f6f"];
+  var colors = ["#ff6"];
+  var wordColor = [];
+  var colorIdx = 0;
+  var matchRegExp = "";
+  var openLeft = false;
+  var openRight = false;
+
+  // characters to strip from start and end of the input string
+  var endRegExp = new RegExp('^[^\\w]+|[^\\w]+$', "g");
+
+  // characters used to break up the input string into words
+  var breakRegExp = new RegExp('[^\\w\'-]+', "g");
+
+  this.setEndRegExp = function(regex) {
+    endRegExp = regex;
+    return endRegExp;
+  };
+
+  this.setBreakRegExp = function(regex) {
+    breakRegExp = regex;
+    return breakRegExp;
+  };
+
+  this.setMatchType = function(type) {
+    switch (type) {
+      case "left":
+        this.openLeft = false;
+        this.openRight = true;
+        break;
+
+      case "right":
+        this.openLeft = true;
+        this.openRight = false;
+        break;
+
+      case "open":
+        this.openLeft = this.openRight = true;
+        break;
+
+      default:
+        this.openLeft = this.openRight = false;
+
+    }
+  };
+
+  this.setRegex = function(input) {
+    input = input.replace(endRegExp, "");
+
+    //The next two deal with the search, If you want to seach somthing like subject 1 and not see all words with subject highlighted then keep the settings as is. If you want to see them all highlighted then uncomment ...(breakRegExp, "|") and comment out the current setting ...(breakRegExp, " ")
+
+    //input = input.replace(breakRegExp, "|");
+    input = input.replace(breakRegExp, " ");
+
+    input = input.replace(/^\||\|$/g, "");
+    if (input) {
+      var re = "(" + input + ")";
+      if (!this.openLeft) re = "\\b" + re;
+      if (!this.openRight) re = re + "\\b";
+      matchRegExp = new RegExp(re, "i");
+      return matchRegExp;
+    }
+    return false;
+  };
+
+  this.getRegex = function() {
+    var retval = matchRegExp.toString();
+    retval = retval.replace(/(^\/(\\b)?|\(|\)|(\\b)?\/i$)/g, "");
+    retval = retval.replace(/\|/g, " ");
+    return retval;
+  };
+
+  // recursively apply word highlighting
+  this.hiliteWords = function(node) {
+    if (node === undefined || !node) return;
+    if (!matchRegExp) return;
+    if (skipTags.test(node.nodeName)) return;
+
+    if (node.hasChildNodes()) {
+      for (var i = 0; i < node.childNodes.length; i++)
+        this.hiliteWords(node.childNodes[i]);
+    }
+    if (node.nodeType == 3) { // NODE_TEXT
+      if ((nv = node.nodeValue) && (regs = matchRegExp.exec(nv))) {
+        if (!wordColor[regs[0].toLowerCase()]) {
+          wordColor[regs[0].toLowerCase()] = colors[colorIdx++ % colors.length];
+        }
+
+        var match = document.createElement(hiliteTag);
+        match.appendChild(document.createTextNode(regs[0]));
+        match.style.backgroundColor = wordColor[regs[0].toLowerCase()];
+        match.style.color = "#000";
+
+        var after = node.splitText(regs.index);
+        after.nodeValue = after.nodeValue.substring(regs[0].length);
+        node.parentNode.insertBefore(match, after);
+      }
+    };
+  };
+
+  // remove highlighting
+  this.remove = function() {
+    var arr = document.getElementsByTagName(hiliteTag);
+    while (arr.length && (el = arr[0])) {
+      var parent = el.parentNode;
+      parent.replaceChild(el.firstChild, el);
+      parent.normalize();
+    }
+  };
+
+  // start highlighting at target node
+  this.apply = function(input) {
+    this.remove();
+    if (input === undefined || !input) return;
+    if (this.setRegex(input)) {
+      this.hiliteWords(targetNode);
+    }
+    return matchRegExp;
+  };
+
 }
+
 </script>
 
 </body>
